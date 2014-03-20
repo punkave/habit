@@ -24,7 +24,7 @@
     "marked": "^0.3.2",
     "findit": "^1.1.1"
   },
-  bin: {
+  "bin": {
     "static-nuns": "./app.js"
   }
 }
