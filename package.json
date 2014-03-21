@@ -25,6 +25,6 @@
     "findit": "^1.1.1"
   },
   "bin": {
-    "static-nuns": "./app.js"
+    "static-nuns": "./bin/static-nuns"
   }
 }
