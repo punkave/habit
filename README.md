@@ -68,6 +68,8 @@ To rebuild.
 
 ## Changelog
 
+0.1.2: global install works.
+
 0.1.1: introduced the policy of ignoring dotfiles and `_` files, filtering markdown and LESS, and just copying everything else. This makes much more sense than a long list of special cases. This change renames the `layouts` folder to `_layouts` so they won't be copied.
 
 ## TODO
