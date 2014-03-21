@@ -1,6 +1,3 @@
-// These folders are copied directly to subdirs of the same name in the _site folder
-var copyDirs = [ 'images', 'fonts' ];
-
 var fs = require('fs');
 var _ = require('lodash');
 var wrench = require('wrench');
@@ -8,7 +5,7 @@ var less = require('less');
 var marked = require('marked');
 var nunjucks = require('nunjucks');
 
-nunjucks.configure('layouts', { });
+nunjucks.configure('_layouts', { });
 
 if (fs.existsSync('_site'))
 {
@@ -17,28 +14,15 @@ if (fs.existsSync('_site'))
 
 fs.mkdirSync('_site');
 
-if (fs.existsSync('stylesheets/main.less'))
-{
-  // Not actually asynchronous
-  less.render(fs.readFileSync('stylesheets/main.less', 'utf8'), { async: false }, function(e, css) {
-    if (e) {
-      throw e;
-    }
-    fs.mkdirSync('_site/stylesheets');
-    fs.writeFileSync('_site/stylesheets/main.css', css);
-  });
-}
-
-_.each(copyDirs, function(dir) {
-  if (fs.existsSync(dir)) {
-    wrench.copyDirSyncRecursive(dir, '_site/' + dir);
-  }
-});
+var filters = {
+  'less': lessFilter,
+  'md': markdownFilter
+};
 
 var browser = require('findit')('.');
 
 browser.on('directory', function(dir, stat, stop) {
-  if (dir.match(/_site/)) {
+  if (ignored(dir)) {
     return;
   }
   if (!fs.existsSync('_site/' + dir)) {
@@ -47,29 +31,77 @@ browser.on('directory', function(dir, stat, stop) {
 });
 
 browser.on('file', function(file, stat) {
-  if (file.match(/\.md$/))
-  {
-    var html = marked(fs.readFileSync(file, 'utf8'));
-    var layout = 'default';
-    var matches = html.match(/<!---\s*layout:\s*(\w+)\s*-->/);
-    if (matches) {
-      layout = matches[1];
-    }
-    html = html.replace(/<!---\s*layout:\s*(\w+)\s*-->/, '');
-    var title;
-    matches = html.match(/<h1.*?>(.*)<\/h1\>/);
-    if (matches) {
-      title = matches[1];
-      html = html.replace(/<h1.*?>(.*)<\/h1\>/, '');
-    }
-    var root = './';
-    var clauses = file.split('/');
-    var i;
-    for (i = 1; (i < clauses.length); i++) {
-      root += '../';
-    }
-    var rendered = nunjucks.render(layout + '.html', { content: html, title: title, root: root });
-    var htmlFile = file.replace(/\.md$/, '.html');
-    fs.writeFileSync('_site/' + htmlFile, rendered);
+  // Ignore dotfiles and _ files
+  if (ignored(file)) {
+    return;
   }
+  var matches = file.match(/\.(\w+)$/);
+  if (matches) {
+    extension = matches[1];
+    // If there is a filter for this type, invoke that instead of copying
+    if (_.has(filters, extension)) {
+      filters[extension](file);
+      return;
+    }
+  }
+  // Everything else is simply copied
+  writeToSite(file, fs.readFileSync(file));
 });
+
+function ignored(file) {
+  // Ignore dotfolders and _ folders, like _site and _layouts
+  if (file.match(/^(\.|_)/)) {
+    return true;
+  }
+  if (file.match(/\/(\.|_)/)) {
+    return true;
+  }
+  return false;
+}
+
+function writeToSite(name, data)
+{
+  fs.writeFileSync('_site/' + name, data);
+}
+
+// Filters for various extensions begin here
+
+function lessFilter(file) {
+  if (!file.match(/main\.less$/)) {
+    // LESS files other than "main" are assumed to be imported
+    // by main so we should not try to compile or copy them separately
+    return;
+  }
+  less.render(fs.readFileSync(file, 'utf8'), { async: false }, function(e, css) {
+    if (e) {
+      throw e;
+    }
+    writeToSite(file.replace(/\.less$/, '.css'), css);
+  });
+}
+
+function markdownFilter(file) {
+  var html = marked(fs.readFileSync(file, 'utf8'));
+  var layout = 'default';
+  var matches = html.match(/<!---\s*layout:\s*(\w+)\s*-->/);
+  if (matches) {
+    layout = matches[1];
+  }
+  html = html.replace(/<!---\s*layout:\s*(\w+)\s*-->/, '');
+  var title;
+  matches = html.match(/<h1.*?>(.*)<\/h1\>/);
+  if (matches) {
+    title = matches[1];
+    html = html.replace(/<h1.*?>(.*)<\/h1\>/, '');
+  }
+  var root = './';
+  var clauses = file.split('/');
+  var i;
+  for (i = 1; (i < clauses.length); i++) {
+    root += '../';
+  }
+  var rendered = nunjucks.render(layout + '.html', { content: html, title: title, root: root });
+  var htmlFile = file.replace(/\.md$/, '.html');
+  writeToSite(htmlFile, rendered);
+}
+
