@@ -68,7 +68,7 @@ To rebuild.
 
 ## Changelog
 
-2014-03-28: renamed "habit" (formerly "static-nuns").
+0.1.3: renamed `habit`.
 
 0.1.2: global install works.
 
