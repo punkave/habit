@@ -1,10 +1,10 @@
-# static-nuns
+# habit
 
 A simple static site generator based on nunjucks, LESS and markdown.
 
 There is a sample site provided in the "test" folder:
 
-```
+```bash
 cd test
 node ../app.js
 ```
@@ -24,7 +24,7 @@ By default each markdown file is fed to the nunjucks template at `_layouts/defau
 
 Insert an HTML comment with an extra `-` to specify the layout:
 
-```
+```html
 <!--- layout: alternate -->
 ```
 
@@ -52,21 +52,23 @@ Need static assets like fonts and images? No problem; they are automatically cop
 
 ### Building your own sites
 
-Install `static-nuns` globally:
+Install `habit` globally:
 
-```
-npm install -g static-nuns
+```bash
+npm install -g habit
 ```
 
 Now you can just `cd` to a folder containing the appropriate content and type:
 
-```
-static-nuns
+```bash
+habit
 ```
 
 To rebuild.
 
 ## Changelog
+
+2014-03-28: renamed "habit" (formerly "static-nuns").
 
 0.1.2: global install works.
 

@@ -1,5 +1,5 @@
 {
-  "name": "static-nuns",
+  "name": "habit",
   "version": "0.1.2",
   "description": "A simple static site generator powered by nunjucks, LESS, and markdown.",
   "main": "app.js",
@@ -25,6 +25,6 @@
     "findit": "^1.1.1"
   },
   "bin": {
-    "static-nuns": "./bin/static-nuns"
+    "habit": "./bin/habit"
   }
 }
