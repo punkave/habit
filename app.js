@@ -4,6 +4,7 @@ var wrench = require('wrench');
 var less = require('less');
 var marked = require('marked');
 var nunjucks = require('nunjucks');
+var path = require('path');
 
 nunjucks.configure('_layouts', { });
 
@@ -72,11 +73,17 @@ function lessFilter(file) {
     // by main so we should not try to compile or copy them separately
     return;
   }
-  less.render(fs.readFileSync(file, 'utf8'), { async: false }, function(e, css) {
+
+  var parser = new(less.Parser)({
+    paths: [path.dirname(file)], // Specify search paths for @import directives
+    filename: file // Specify a filename, for better error messages
+  });
+
+  parser.parse(fs.readFileSync(file, 'utf8'), function(e, tree) {
     if (e) {
       throw e;
     }
-    writeToSite(file.replace(/\.less$/, '.css'), css);
+    writeToSite(file.replace(/\.less$/, '.css'), tree.toCSS());
   });
 }
 
