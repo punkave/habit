@@ -68,6 +68,8 @@ To rebuild.
 
 ## Changelog
 
+0.1.6: fixed `@import` in LESS.
+
 0.1.3, 0.1.4, 0.1.5: renamed `habit`.
 
 0.1.2: global install works.
