@@ -1,10 +1,11 @@
-<!--- layout: alternate -->
-# Welcome
+---
+layout: alternate
+title: "Welcome"
+children:
+  - basics
+  - advanced
+---
 
 ## Second Level Heading
 
 This is some regular text.
-
-## HOWTOs
-
-[Flossing](howtos/flossing.html)

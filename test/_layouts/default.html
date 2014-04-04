@@ -10,7 +10,31 @@
 <body {% block bodyClass %}{% endblock %}>
   <div class="content">
     <h1><a href="{{ root }}index.html">habit</a>: {{ title }}</h1>
+
+    <h4>
+      {% for ancestor in ancestors %}
+        {% if not loop.first %} | {% endif %}
+        <a href="{{ root }}{{ ancestor.url }}">{{ ancestor.title }}</a>
+      {% endfor %}
+    </h4>
+
+    {% if children %}
+      <ul>
+        {% for child in children %}
+          <li><a href="{{ root }}{{ child.url }}">{{ child.title }}</a></li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+
+    {% if previous %}
+      <h4><a href="{{ root }}{{ previous.url }}">Previous: {{ previous.title }}</a></h4>
+    {% endif %}
+
     {{ content }}
+
+    {% if next %}
+      <h4><a href="{{ root }}{{ next.url }}">Next: {{ next.title }}</a></h4>
+    {% endif %}
   </div>
   {% block footer %}{% endblock %}
 </body>
