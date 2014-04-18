@@ -57,8 +57,9 @@ browser.on('end', function() {
   // Create an array of children and a pointer to the parent
   // for each file.
   //
-  // Order the arrays of children based on the "previous" property
-  // of each child.
+  // Set the "previous" and "next" properties of each page so
+  // it is possible to walk through the entire site in a
+  // depth-first traversal.
   //
   // Now we have metadata to build navigation.
 
@@ -100,18 +101,6 @@ browser.on('end', function() {
         actualChildren.push(winner);
       });
       file.children = actualChildren;
-
-      previous = undefined;
-      _.each(file.children, function(child) {
-        child.previous = previous;
-        previous = child;
-      });
-
-      next = undefined;
-      var i;
-      for (i = 0; (i < file.children.length - 1); i++) {
-        file.children[i].next = file.children[i + 1];
-      }
     }
 
     file.ancestors = [];
@@ -121,6 +110,28 @@ browser.on('end', function() {
       ancestor = ancestor.parent;
     }
   });
+
+  // Set up "previous" and "next" for each page so users can
+  // walk through the entire site in a depth first traversal,
+  // like reading through an outline
+
+  var home = keys[0];
+  var previous;
+  if (home) {
+    home = map[home];
+    depthFirst(home);
+  }
+
+  function depthFirst(current) {
+    current.previous = previous;
+    if (previous) {
+      previous.next = current;
+    }
+    previous = current;
+    _.each(current.children, function(child) {
+      depthFirst(child);
+    });
+  }
 
   // The final rendering pass
   _.each(map, function(info, file) {
