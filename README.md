@@ -22,9 +22,11 @@ By default each markdown file is fed to the nunjucks template at `_layouts/defau
 
 Your markdown file must begin with a metadata section, like this:
 
+```
 ---
 title: "This is the title of my page"
 ---
+```
 
 *Any metadata you provide is passed to the nunjucks layout template that renders your page.*
 
@@ -34,10 +36,12 @@ Metadata is parsed as [YAML](http://www.yaml.org/), so you may pass as much data
 
 Just use metadata:
 
+```
 ---
 title: "This is the title of my page"
 layout: alternate
 ---
+```
 
 This will use the nunjucks template `_layouts/alternate.html` instead.
 
@@ -63,13 +67,13 @@ To take advantage, you must:
 Confused? Here's a simple example of a page with children:
 
 ```
----
-title: "Advanced"
-children:
-  - flossing
-  - mortgaging
-  - dancing
----
+    ---
+    title: "Advanced"
+    children:
+      - flossing
+      - mortgaging
+      - dancing
+    ---
 
 ## Advanced life skills
 
