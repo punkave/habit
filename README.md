@@ -126,6 +126,8 @@ To rebuild.
 
 ## Changelog
 
+0.2.2: just documentation fixes.
+
 0.2.1: The "next" and "previous" properties now allow you to traverse the entire site depth-first. That is, you can read through the entire "book" by continuing to click "next."
 
 0.2.0: metadata and navigation-building data.
