@@ -1,6 +1,6 @@
 {
   "name": "habit",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "description": "A simple static site generator powered by nunjucks, LESS, and markdown.",
   "main": "app.js",
   "scripts": {

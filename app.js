@@ -22,6 +22,38 @@ var filters = {
 
 var map = {};
 
+// Custom renderer for headings. We don't want to make a nasty
+// named anchor based on parameters in parentheses. But we do
+// need to make sure we don't output the same named anchor twice
+// if there are multiple syntaxes. So differentiate with
+// numbers if needed.
+
+function newRenderer() {
+  var renderer = new mm.Renderer();
+  renderer.slugsSeen = {};
+  renderer.heading = function (text, level) {
+    var slug = text.replace(/\(.*/, '');
+    slug = cssName(slug);
+    slug = slug.replace(/\-+/g, '-');
+    slug = slug.replace(/^\-/, '');
+    slug = slug.replace(/\-$/, '');
+
+    if (renderer.slugsSeen[slug]) {
+      renderer.slugsSeen[slug]++;
+      slug += renderer.slugsSeen[slug];
+    } else {
+      renderer.slugsSeen[slug] = 1;
+    }
+    return '<h' + level + '><a name="' +
+      slug +
+       '" class="anchor" href="#' +
+       slug +
+       '"><span class="header-link"></span></a>' +
+        text + '</h' + level + '>';
+  };
+  return renderer;
+}
+
 var browser = require('findit')('.');
 
 browser.on('directory', function(dir, stat, stop) {
@@ -196,7 +228,7 @@ function lessFilter(file) {
 }
 
 function markdownFilter(file) {
-  var info = mm(fs.readFileSync(file, 'utf8'));
+  var info = mm(fs.readFileSync(file, 'utf8'), { renderer: newRenderer() });
   var meta = info.meta || {};
   var html = info.html;
   meta.layout = meta.layout || 'default';
@@ -214,5 +246,38 @@ function markdownFilter(file) {
   // Don't write it now; we'll make another pass after
   // combining the metadata that builds our navigation
   map[file] = data;
+}
+
+// Convert a string to look like a typical CSS
+// class name, with hypens. Hi There becomes hi-there,
+// hiThere also becomes hi-there, etc. Borrowed
+// from Apostrophe.
+
+function cssName(name) {
+  var i;
+  var css = '';
+  var dash = false;
+  for (i = 0; (i < name.length); i++) {
+    var c = name.charAt(i);
+    var lower = ((c >= 'a') && (c <= 'z'));
+    var upper = ((c >= 'A') && (c <= 'Z'));
+    var digit = ((c >= '0') && (c <= '9'));
+    if (!(lower || upper || digit)) {
+      dash = true;
+      continue;
+    }
+    if (upper) {
+      if (i > 0) {
+        dash = true;
+      }
+      c = c.toLowerCase();
+    }
+    if (dash) {
+      css += '-';
+      dash = false;
+    }
+    css += c;
+  }
+  return css;
 }
 

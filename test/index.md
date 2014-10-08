@@ -9,3 +9,9 @@ children:
 ## Second Level Heading
 
 This is some regular text.
+
+## aposArea(page, name, options)
+
+## aposArea(options)
+
+Two syntaxes for a function.
