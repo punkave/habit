@@ -1,6 +1,6 @@
 {
   "name": "habit",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "A simple static site generator powered by nunjucks, LESS, and markdown.",
   "main": "app.js",
   "scripts": {
@@ -27,5 +27,9 @@
   },
   "bin": {
     "habit": "./bin/habit"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/punkave/habit.git"
+  },
 }

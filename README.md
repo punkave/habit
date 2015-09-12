@@ -126,6 +126,8 @@ To rebuild.
 
 ## Changelog
 
+0.3.1: linked to github repository. No code changes.
+
 0.3.0: linking to headings within a page is much nicer. Headings now contain anchor elements with the `anchor` class, as seen on github. The `name` of each heading is hyphenated, like a CSS class name. This automatically does the right thing whether the original name was "a sentence with spaces", "aCamelCaseFunctionName", or "an_underscored_function_name". If a heading contains `(`, that character and everything after it is ignored when constructing the name, allowing you to easily link to documentation for a function that includes the parameters in the header. However, if two headings would otherwise have the same `name`, `2` is appended to the second one, `3` to the third one and so on.
 
 0.2.2: just documentation fixes.
