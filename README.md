@@ -126,6 +126,8 @@ To rebuild.
 
 ## Changelog
 
+0.3.3: filename is reported when a nunjucks error occurs.
+
 0.3.2: filename is reported when a markdown error occurs.
 
 0.3.1: linked to github repository. No code changes.

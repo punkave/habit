@@ -167,7 +167,13 @@ browser.on('end', function() {
 
   // The final rendering pass
   _.each(map, function(info, file) {
-    var rendered = nunjucks.render(info.layout + '.html', info);
+    try {
+      var rendered = nunjucks.render(info.layout + '.html', info);
+    } catch (e) {
+      console.error();
+      console.error('A nunjucks error occurred while processing ' + file + ':\n');
+      throw e;
+    }
     var htmlFile = file.replace(/\.md$/, '.html');
     writeToSite(htmlFile, rendered);
   });
