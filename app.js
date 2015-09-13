@@ -228,7 +228,13 @@ function lessFilter(file) {
 }
 
 function markdownFilter(file) {
-  var info = mm(fs.readFileSync(file, 'utf8'), { renderer: newRenderer() });
+  var info;
+  try {
+    info = mm(fs.readFileSync(file, 'utf8'), { renderer: newRenderer() });
+  } catch (e) {
+    console.error('\nmarkdown error while processing ' + file);
+    throw e;
+  }
   var meta = info.meta || {};
   var html = info.html;
   meta.layout = meta.layout || 'default';
