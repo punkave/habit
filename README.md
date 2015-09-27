@@ -126,6 +126,10 @@ To rebuild.
 
 ## Changelog
 
+0.3.4: added a `process.exit(0)` call to address a situation where `habit` does not otherwise terminate in node 0.12.7 on a Mac when installed globally. Despite chasing this with `process._getActiveHandles` and `process._getActiveRequests` I still don't know why.
+
+`¯\_(ツ)_/¯`
+
 0.3.3: filename is reported when a nunjucks error occurs.
 
 0.3.2: filename is reported when a markdown error occurs.

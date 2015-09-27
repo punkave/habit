@@ -177,6 +177,12 @@ browser.on('end', function() {
     var htmlFile = file.replace(/\.md$/, '.html');
     writeToSite(htmlFile, rendered);
   });
+
+  // This should not be necessary, but when habit is run via a globally
+  // installed "bin" script, it does not exit on completion without this
+  // in node 0.12.7
+  process.exit(0);
+
 });
 
 function shortName(file) {
