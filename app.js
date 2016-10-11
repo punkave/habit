@@ -209,6 +209,9 @@ function ignored(file) {
   if (file.match(/\/(\.|_)/)) {
     return true;
   }
+  if (file.match(/^node_modules\/?(.*)$/)) {
+    return true;
+  }
   return false;
 }
 
@@ -298,4 +301,3 @@ function cssName(name) {
   }
   return css;
 }
-
