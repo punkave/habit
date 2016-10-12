@@ -30,7 +30,7 @@ title: "This is the title of my page"
 
 *Any metadata you provide is passed to the nunjucks layout template that renders your page.*
 
-Metadata is parsed as [YAML](http://www.yaml.org/), so you may pass as much data as you like.
+Metadata is parsed as [YAML](http://www.yaml.org/), so you may pass as much data as you like. All of your metadata becomes available to Nunjucks templates, when rendering that page or any other that references it as a child, ancestor, etc.  Note that Nunjucks auto-escaping is in effect, so use `| safe` in your layouts if you are intentionally passing markup.
 
 ### Selecting a different layout
 
@@ -53,7 +53,9 @@ To make relative links between pages just use the standard Markdown syntax. Keep
 
 ### Absolute links within the site in Markdown
 
-To make absolute links with in your site, always preface your URL with `{{ root }}`. This ensures that you can copy your `_site` folder into github pages or another environment where it will be in a subdirectory and not at the actual root of the site. If you know your content will be at the root you may ignore this.
+If your site is going to be a standalone website living at root, do whatever you like with URLs that start with `/`. The `--server` convenience option pairs well with this.
+
+If you need to build a site that can be moved around from folder to folder within a larger site, preface "absolute" links in your layouts with `{{ root }}`. This ensures that you can copy your `_site` folder into github pages or another environment where it will be in a subdirectory and not at the actual root of the site. If you know your content will be at the root you may ignore this.
 
 ### Building navigation
 
@@ -122,9 +124,26 @@ Now you can just `cd` to a folder containing the appropriate content and type:
 habit
 ```
 
-To rebuild.
+To rebuild the `_site` folder.
+
+But for testing, this is more convenient:
+
+```bash
+habit --server
+```
+
+This will launch a little webserver ready for you to check out your pages at `http://localhost:3000` by default. You may change that with the `ADDRESS` and `PORT` environment variables.
 
 ## Changelog
+
+0.4.0:
+
+* New `--server` convenience option, which listens at `http://localhost:3000` by default. You may change that with the `ADDRESS` and `PORT` environment variables.
+* Updated dependencies, notably `less` and `nunjucks`.
+* nunjucks now auto-escapes the data you pass in via YAML. If you are passing something that should be used directly as markup, use the `| safe` nunjucks filter in your layout. You *do not* need to use `| escape` or `| e`.
+* ignore a top-level `node_modules` folder. This makes sense because it allows a site to be built with habit as a dependency rather than using habit globally. Thanks to Alex Gleason.
+
+
 
 0.3.4: added a `process.exit(0)` call to address a situation where `habit` does not otherwise terminate in node 0.12.7 on a Mac when installed globally. Despite chasing this with `process._getActiveHandles` and `process._getActiveRequests` I still don't know why.
 
@@ -151,5 +170,3 @@ To rebuild.
 0.1.2: global install works.
 
 0.1.1: introduced the policy of ignoring dotfiles and `_` files, filtering markdown and LESS, and just copying everything else. This makes much more sense than a long list of special cases. This change renames the `layouts` folder to `_layouts` so they won't be copied.
-
-

@@ -1,16 +1,19 @@
-var fs = require('fs');
+var fs = require('fs-extra');
 var _ = require('lodash');
-var wrench = require('wrench');
 var less = require('less');
 var mm = require('meta-marked');
 var nunjucks = require('nunjucks');
 var path = require('path');
+var express = require('express');
+var argv = require('boring')();
 
-nunjucks.configure('_layouts', { });
+var server = argv['server'];
+
+nunjucks.configure('_layouts', { autoescape: true });
 
 if (fs.existsSync('_site'))
 {
-  wrench.rmdirSyncRecursive('_site');
+  fs.removeSync('_site');
 }
 
 fs.mkdirSync('_site');
@@ -178,11 +181,27 @@ browser.on('end', function() {
     writeToSite(htmlFile, rendered);
   });
 
-  // This should not be necessary, but when habit is run via a globally
-  // installed "bin" script, it does not exit on completion without this
-  // in node 0.12.7
-  process.exit(0);
+  if (!server) {
+    // This should not be necessary, but when habit is run via a globally
+    // installed "bin" script, it does not exit on completion without this
+    // in node 0.12.7
+    process.exit(0);
+  }
 
+  if (server) {
+    var app = express();
+    app.use(express.static('_site'));
+    var port = process.env.PORT || '3000';
+    var address = process.env.ADDRESS || 'localhost';
+    server = app.listen(parseInt(port), address);
+    server.on('error', function(err) {
+      console.error(err);
+      process.exit(1);
+    });
+    server.on('listening', function() {
+      console.log('Listening for connections at http://' + address + ':' + port + '/');
+    });
+  }
 });
 
 function shortName(file) {
@@ -229,16 +248,16 @@ function lessFilter(file) {
     return;
   }
 
-  var parser = new(less.Parser)({
-    paths: [path.dirname(file)], // Specify search paths for @import directives
-    filename: file // Specify a filename, for better error messages
-  });
-
-  parser.parse(fs.readFileSync(file, 'utf8'), function(e, tree) {
-    if (e) {
-      throw new Error(e);
+  // Although a callback is used, this is synchronous
+  less.render(fs.readFileSync(file, 'utf8'), {
+    filename: file,
+    paths: [path.dirname(file)],
+    syncImport: true
+  }, function(err, result) {
+    if (err) {
+      throw err;
     }
-    writeToSite(file.replace(/\.less$/, '.css'), tree.toCSS());
+    writeToSite(file.replace(/\.less$/, '.css'), result.css);
   });
 }
 
@@ -260,7 +279,7 @@ function markdownFilter(file) {
     root += '../';
   }
   var data = meta;
-  data.content = html;
+  data.content = new nunjucks.runtime.SafeString(info.html);
   data.file = file;
   data.root = root;
   data.url = data.file.replace(/\.md/, '.html');
