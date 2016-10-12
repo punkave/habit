@@ -2,6 +2,12 @@
 
 A simple static site generator based on nunjucks, LESS and markdown.
 
+## "Why?"
+
+We wanted a static site generator that uses the same frontend stack as [Apostrophe](http://apostrophecms.org). We also wanted strong support for building accordion-style navigation, breadcrumb trails, "next" buttons and the like easily.
+
+## Getting started
+
 There is a sample site provided in the "test" folder:
 
 ```bash
