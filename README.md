@@ -138,7 +138,7 @@ But for testing, this is more convenient:
 habit --server
 ```
 
-This will launch a little webserver ready for you to check out your pages at `http://localhost:3000` by default. You may change that with the `ADDRESS` and `PORT` environment variables.
+This will rebuild your `_site` folder, then launch a little webserver ready for you to check out your pages at `http://localhost:3000` by default. You may change that with the `ADDRESS` and `PORT` environment variables.
 
 ## Deployment
 
@@ -153,6 +153,8 @@ echo "Done!"
 ```
 
 ## Changelog
+
+0.4.1: clarify that `--server` does rebuild your site first. No code changes.
 
 0.4.0:
 
