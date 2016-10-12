@@ -134,6 +134,18 @@ habit --server
 
 This will launch a little webserver ready for you to check out your pages at `http://localhost:3000` by default. You may change that with the `ADDRESS` and `PORT` environment variables.
 
+## Deployment
+
+Up to you, but here's a little shell script we use:
+
+```bash
+#!/bin/bash
+
+habit &&
+rsync --delete -a _site/ user@example-server.com:/var/www/mysite &&
+echo "Done!"
+```
+
 ## Changelog
 
 0.4.0:
